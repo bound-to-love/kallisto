@@ -118,6 +118,7 @@ void ParseOptionsEM(int argc, char **argv, ProgramOptions& opt) {
   int plaintext_flag = 0;
   int write_index_flag = 0;
   int single_flag = 0;
+  int long_flag = 0;
   int strand_FR_flag = 0;
   int strand_RF_flag = 0;
   int bias_flag = 0;
@@ -131,6 +132,8 @@ void ParseOptionsEM(int argc, char **argv, ProgramOptions& opt) {
     {"plaintext", no_argument, &plaintext_flag, 1},
     {"write-index", no_argument, &write_index_flag, 1},
     {"single", no_argument, &single_flag, 1},
+   // Adding long-read option, which will handle fragment length differently than the single option. 
+    {"long", no_argument, &long_flag, 1},
     {"fr-stranded", no_argument, &strand_FR_flag, 1},
     {"rf-stranded", no_argument, &strand_RF_flag, 1},
     {"bias", no_argument, &bias_flag, 1},
@@ -331,6 +334,8 @@ void ParseOptionsPseudo(int argc, char **argv, ProgramOptions& opt) {
     // long args
     {"verbose", no_argument, &verbose_flag, 1},
     {"single", no_argument, &single_flag, 1},
+   // Adding long-read option, which will handle fragment length differently than the single option. 
+    {"long", no_argument, &long_flag, 1},
     //{"strand-specific", no_argument, &strand_flag, 1},
     {"pseudobam", no_argument, &pbam_flag, 1},
     {"umi", no_argument, &umi_flag, 'u'},
@@ -985,6 +990,7 @@ void usageEM(bool valid_input = true) {
        << "    --plaintext               Output plaintext instead of HDF5" << endl
        << "    --fusion                  Search for fusions for Pizzly" << endl
        << "    --single                  Quantify single-end reads" << endl
+       << "    --long                    Quantify long reads" << endl
        << "    --fr-stranded             Strand specific reads, first read forward" << endl
        << "    --rf-stranded             Strand specific reads, first read reverse" << endl
        << "-l, --fragment-length=DOUBLE  Estimated average fragment length" << endl
@@ -1011,6 +1017,7 @@ void usagePseudo(bool valid_input = true) {
        << "-u  --umi                     First file in pair is a UMI file" << endl
        << "-b  --batch=FILE              Process files listed in FILE" << endl
        << "    --single                  Quantify single-end reads" << endl
+       << "    --long                    Quantify long reads" << endl
        << "-l, --fragment-length=DOUBLE  Estimated average fragment length" << endl
        << "-s, --sd=DOUBLE               Estimated standard deviation of fragment length" << endl
        << "                              (default: -l, -s values are estimated from paired" << endl
