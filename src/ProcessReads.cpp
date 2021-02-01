@@ -1134,8 +1134,10 @@ void ReadProcessor::processBuffer() {
 
     /* --  possibly modify the pseudoalignment  -- */
 
-     
-    if (long_read){
+    if (l1 <= 152){
+      std::cout << "read is too short " << std::endl;
+    }
+    if (long_read && l1 > 152){
       //Formerly 5th basepair from either end of read checked, now making 77th basepair in.
       slr = new char[l1-152];
       for (int i = 76; i < l1 - 76; i++) {
