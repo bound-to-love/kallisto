@@ -1138,6 +1138,36 @@ void ReadProcessor::processBuffer() {
       std::cout << "read is too short " << std::endl;
     }
     if (long_read && l1 > 152){
+      if (!v1.empty()) {
+        p = findFirstMappingKmer(v1,val);
+        km = Kmer((s1+p));
+      }
+
+
+      // for each transcript in the pseudoalignment
+      for (auto tr : u) {
+        //use:  (pos,sense) = index.findPosition(tr,km,val,p)
+        //pre:  index.kmap[km] == val,
+        //      km is the p-th k-mer of a read
+        //      val.contig maps to tr
+        //post: km is found in position pos (1-based) on the sense/!sense strand of tr
+        auto x = index.findPosition(tr, km, val, p);
+        // if the fragment is within bounds for this transcript, keep it
+        if (x.second && x.first + l1 <= index.target_lens_[tr]) {
+          vtmp.push_back(tr);
+        } else {
+          //pass
+        }
+        if (!x.second && x.first - l1 >= 0) {
+          vtmp.push_back(tr);
+        } else {
+          //pass
+        }
+      }
+      if (vtmp.size() < u.size()) {
+         u = vtmp;
+      }
+      
       //Formerly 5th basepair from either end of read checked, now making 77th basepair in.
       slr = new char[l1-152];
       for (int i = 76; i < l1 - 76; i++) {
@@ -1194,56 +1224,6 @@ void ReadProcessor::processBuffer() {
       }
       if (vtmp.size() < lr.size()) {
          lr = vtmp; // copy
-         u = vtmp;
-      }
-       
-      vtmp.clear();
-      // inspect the positions
-      p = -1;
-
-
-      index.match(s1,l1, v1);
-
-
-      // collect the target information
-      ec = -1;
-      r = tc.intersectKmers(v1, v2, !paired, u);
-      if (u.empty()) {
-        if (mp.opt.fusion && !(v1.empty() || v2.empty())) {
-          searchFusion(index,mp.opt,tc,mp,ec,names[i-1].first,s1,v1,names[i].first,s2,v2,paired);
-        }
-      } else {
-        ec = tc.findEC(u);
-      }
-
-
-      if (!v1.empty()) {
-        p = findFirstMappingKmer(v1,val);
-        km = Kmer((s1+p));
-      }
-
-
-      // for each transcript in the pseudoalignment
-      for (auto tr : u) {
-        //use:  (pos,sense) = index.findPosition(tr,km,val,p)
-        //pre:  index.kmap[km] == val,
-        //      km is the p-th k-mer of a read
-        //      val.contig maps to tr
-        //post: km is found in position pos (1-based) on the sense/!sense strand of tr
-        auto x = index.findPosition(tr, km, val, p);
-        // if the fragment is within bounds for this transcript, keep it
-        if (x.second && x.first + l1 <= index.target_lens_[tr]) {
-          vtmp.push_back(tr);
-        } else {
-          //pass
-        }
-        if (!x.second && x.first - l1 >= 0) {
-          vtmp.push_back(tr);
-        } else {
-          //pass
-        }
-      }
-      if (vtmp.size() < u.size()) {
          u = vtmp;
       }
     }
