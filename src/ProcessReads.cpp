@@ -1136,9 +1136,10 @@ void ReadProcessor::processBuffer() {
 
      
     if (long_read){
-      slr = new char[l1-8];
-      for (int i = 4; i < l1 - 4; i++) {
-        slr[i-4] = s1[i];
+      //Formerly 5th basepair from either end of read checked, now making 77th basepair in.
+      slr = new char[l1-152];
+      for (int i = 76; i < l1 - 76; i++) {
+        slr[i-76] = s1[i];
       }
       vtmp.clear();
       // inspect the positions
@@ -1148,7 +1149,7 @@ void ReadProcessor::processBuffer() {
 
 
       // Now find the approx. effective length.
-      index.match(slr,l1-8, vlr);
+      index.match(slr,l1-152, vlr);
 
 
       // collect the target information
@@ -1178,12 +1179,12 @@ void ReadProcessor::processBuffer() {
         //post: km is found in position pos (1-based) on the sense/!sense strand of tr
         auto x = index.findPosition(tr, km, val, p);
         // if the fragment is within bounds for this transcript, keep it
-        if (x.second && x.first + l1-4 <= index.target_lens_[tr]) {
+        if (x.second && x.first + l1-76 <= index.target_lens_[tr]) {
           vtmp.push_back(tr);
         } else {
           //pass
         }
-        if (!x.second && x.first - l1-8 >= 0) {
+        if (!x.second && x.first - l1-152 >= 0) {
           vtmp.push_back(tr);
         } else {
           //pass
@@ -1193,7 +1194,56 @@ void ReadProcessor::processBuffer() {
          lr = vtmp; // copy
          u = vtmp;
       }
+       
+      vtmp.clear();
+      // inspect the positions
+      p = -1;
 
+
+      index.match(s1,l1, v1);
+
+
+      // collect the target information
+      int ec = -1;
+      int r = tc.intersectKmers(v1, v2, !paired, u);
+      if (u.empty()) {
+        if (mp.opt.fusion && !(v1.empty() || v2.empty())) {
+          searchFusion(index,mp.opt,tc,mp,ec,names[i-1].first,s1,v1,names[i].first,s2,v2,paired);
+        }
+      } else {
+        ec = tc.findEC(u);
+      }
+
+
+      if (!v1.empty()) {
+        p = findFirstMappingKmer(v1,val);
+        km = Kmer((slr+p));
+      }
+
+
+      // for each transcript in the pseudoalignment
+      for (auto tr : u) {
+        //use:  (pos,sense) = index.findPosition(tr,km,val,p)
+        //pre:  index.kmap[km] == val,
+        //      km is the p-th k-mer of a read
+        //      val.contig maps to tr
+        //post: km is found in position pos (1-based) on the sense/!sense strand of tr
+        auto x = index.findPosition(tr, km, val, p);
+        // if the fragment is within bounds for this transcript, keep it
+        if (x.second && x.first + l1 <= index.target_lens_[tr]) {
+          vtmp.push_back(tr);
+        } else {
+          //pass
+        }
+        if (!x.second && x.first - l1 >= 0) {
+          vtmp.push_back(tr);
+        } else {
+          //pass
+        }
+      }
+      if (vtmp.size() < u.size()) {
+         u = vtmp;
+      }
     }
 
 
@@ -1336,31 +1386,31 @@ void ReadProcessor::processBuffer() {
       }
     }
     
-    if(!lr.empty() && long_read){
-      ec = tc.findEC(lr);
+    if(!u.empty() && long_read){
+      ec = tc.findEC(u);
 
       if (!mp.opt.umi) {
         // count the pseudoalignment
         if (ec == -1 || ec >= counts.size()) {
           // something we haven't seen before
-          newEcs.push_back(lr);
+          newEcs.push_back(u);
         } else {
           // add to count vector
           ++counts[ec];
         }
       } else {       
         if (ec == -1 || ec >= counts.size()) {
-          new_ec_umi.emplace_back(lr, std::move(umis[i]));          
+          new_ec_umi.emplace_back(u, std::move(umis[i]));          
         } else {
           ec_umi.emplace_back(ec, std::move(umis[i]));
         }
       }
 
       // collect fragment length info
-      if (long_read && 0 <= ec &&  ec < index.num_trans && !vlr.empty()) {
+      if (!lr.empty() && long_read && 0 <= ec &&  ec < index.num_trans && !vlr.empty()) {
         std::vector<std::pair<KmerEntry,int>> vlr_end;
-        if (vlr.size() > 5){
-          vlr_end = {vlr.end() - 5, vlr.end()};
+        if (vlr.size() > 77){
+          vlr_end = {vlr.end() - 77, vlr.end()};
         } else {
           vlr_end = vlr; 
         }
@@ -1390,22 +1440,22 @@ void ReadProcessor::processBuffer() {
       }
     }
       
-   if(!lr.empty() && long_read){
-     ec = tc.findEC(lr);
+   if(!u.empty() && long_read){
+     ec = tc.findEC(u);
 
 
      if (!mp.opt.umi) {
        // count the pseudoalignment
        if (ec == -1 || ec >= counts.size()) {
          // something we haven't seen before
-         newEcs.push_back(lr);
+         newEcs.push_back(u);
        } else {
          // add to count vector
          ++counts[ec];
        }
      } else {      
        if (ec == -1 || ec >= counts.size()) {
-         new_ec_umi.emplace_back(lr, std::move(umis[i]));         
+         new_ec_umi.emplace_back(u, std::move(umis[i]));         
        } else {
          ec_umi.emplace_back(ec, std::move(umis[i]));
        }
@@ -1413,7 +1463,7 @@ void ReadProcessor::processBuffer() {
 
 
      // collect fragment length info
-     if (long_read && 0 <= ec &&  ec < index.num_trans && !vlr.empty()) {
+     if (!lr.empty() && long_read && 0 <= ec &&  ec < index.num_trans && !vlr.empty()) {
        int p = -1, p2 = -1;
        KmerEntry val, val2;
        Kmer km, km2;
