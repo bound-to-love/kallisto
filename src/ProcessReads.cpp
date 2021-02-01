@@ -1217,7 +1217,7 @@ void ReadProcessor::processBuffer() {
 
       if (!v1.empty()) {
         p = findFirstMappingKmer(v1,val);
-        km = Kmer((slr+p));
+        km = Kmer((s1+p));
       }
 
 
