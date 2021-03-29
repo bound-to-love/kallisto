@@ -1134,10 +1134,10 @@ void ReadProcessor::processBuffer() {
 
     /* --  possibly modify the pseudoalignment  -- */
 
-    if (l1 <= 152){
+    if (l1 <= 8){
       std::cout << "read is too short " << std::endl;
     }
-    if (long_read && l1 > 152){
+    if (long_read && l1 > 8){
       if (!v1.empty()) {
         p = findFirstMappingKmer(v1,val);
         km = Kmer((s1+p));
