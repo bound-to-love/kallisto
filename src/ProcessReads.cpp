@@ -1138,6 +1138,10 @@ void ReadProcessor::processBuffer() {
       std::cout << "read is too short " << std::endl;
     }
     if (long_read && l1 > 8){
+      // inspect the positions
+      int p = -1;
+      KmerEntry val;
+      Kmer km;
       if (!v1.empty()) {
         p = findFirstMappingKmer(v1,val);
         km = Kmer((s1+p));
@@ -1175,10 +1179,6 @@ void ReadProcessor::processBuffer() {
       }
       vtmp.clear();
       // inspect the positions
-      int p = -1;
-      KmerEntry val;
-      Kmer km;
-
 
       // Now find the approx. effective length.
       index.match(slr,l1-4, vlr);
