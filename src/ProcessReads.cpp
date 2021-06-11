@@ -1390,6 +1390,30 @@ void ReadProcessor::processBuffer() {
 
       // collect fragment length info
       if (!lr.empty() && long_read && 0 <= ec &&  ec < index.num_trans && !vlr.empty()) {
+        int pass=vlr.size()/10;
+        std::vector<std::pair<KmerEntry,int>> vlr_pass;
+        int passall=1;
+        KmerEntry val; 
+        Kmer km; 
+        for (int i = 0; i < pass+1; i++)
+        {
+          int p = -1;
+          vlr_pass={vlr.end()-(10-i)*pass,vlr.end()-(10-(i+1))*pass};
+          p = findFirstMappingKmer(vlr_pass, val);
+          km = Kmer((slr+p));
+          auto x = index.findPosition(lr[0], km, val, p);
+          if (x.first == -1){
+            passall=-1;
+          }
+        }
+        if(passall==1) {
+          tl = l1;
+        }else{
+          tl=-1;
+        }
+        // try to map the reads
+        /**
+        //Revised 6.10.2021
         std::vector<std::pair<KmerEntry,int>> vlr_end;
         if (vlr.size() > 5){
           vlr_end = {vlr.end() - 5, vlr.end()};
@@ -1399,7 +1423,6 @@ void ReadProcessor::processBuffer() {
         int p = -1, p2 = -1;
         KmerEntry val, val2;
         Kmer km, km2;
-        // try to map the reads
         p = findFirstMappingKmer(vlr,val);
         p2 = findFirstMappingKmer(vlr_end,val2);
         km = Kmer((slr+p));
@@ -1410,6 +1433,7 @@ void ReadProcessor::processBuffer() {
         if (x.first != -1 && x2.first != -1) {
           tl = l1;
         }
+        **/
         /**
         auto x = index.findPosition(lr[0], km, val, p);
         auto x2 = index.findPosition(lr[0], km2, val2, p2);
