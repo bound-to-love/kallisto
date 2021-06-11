@@ -1406,10 +1406,9 @@ void ReadProcessor::processBuffer() {
             passall=-1;
           }
         }
+        int tl=-1;
         if(passall==1) {
           tl = l1;
-        }else{
-          tl=-1;
         }
         // try to map the reads
         /**
