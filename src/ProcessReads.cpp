@@ -1390,7 +1390,7 @@ void ReadProcessor::processBuffer() {
 
       // collect fragment length info
       if (!lr.empty() && long_read && 0 <= ec &&  ec < index.num_trans && !vlr.empty()) {
-        int num_samples=5;
+        int num_samples=10;
         int pass=vlr.size()/num_samples;
         std::vector<std::pair<KmerEntry,int>> vlr_pass;
         int passall=1;
