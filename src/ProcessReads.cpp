@@ -1396,10 +1396,10 @@ void ReadProcessor::processBuffer() {
         int passall=1;
         KmerEntry val; 
         Kmer km; 
-        for (int i = 0; i < pass+1; i++)
+        for (int i = 1; i < num_samples+1; i++)
         {
           int p = -1;
-          vlr_pass={vlr.end()-(num_samples-i)*pass,vlr.end()-(num_samples-(i+1))*pass};
+          vlr_pass={vlr.end()-(i-1)*pass,vlr.end()-i*pass};
           p = findFirstMappingKmer(vlr_pass, val);
           km = Kmer((slr+p));
           auto x = index.findPosition(lr[0], km, val, p);
