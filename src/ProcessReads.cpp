@@ -1396,7 +1396,7 @@ void ReadProcessor::processBuffer() {
         int passall=1;
         KmerEntry val; 
         Kmer km; 
-        for (int i = 1; i < num_samples+1; i++)
+        for (int i = 1; i < num_samples; i++)
         {
           int p = -1;
           vlr_pass={vlr.end()-(i-1)*pass,vlr.end()-i*pass};
