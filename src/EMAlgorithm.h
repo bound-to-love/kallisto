@@ -48,7 +48,7 @@ struct EMAlgorithm {
      std::cout << "Size of target_names_ is: " << target_names_.size() << std::endl;
      eff_lens_.reserve(tc.flens_lr.size()); 
      for (int i = 0; i < tc.flens_lr.size(); i++){
-       if  (tc.flens_lr[i]/tc.flens_lr_c[i] == 31){
+       if  (tc.flens_lr[i] % 31 == 0){
         eff_lens_.push_back(index_.target_lens_[i]-31);
        }
        else if (tc.flens_lr_c[i] != 0 && tc.flens_lr[i] != 0){
