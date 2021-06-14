@@ -42,13 +42,13 @@ struct EMAlgorithm {
     opt(opt)
   {
     assert(all_fl_means.size() == index_.target_lens_.size());
-    
+    const int zero = 0; 
    if (opt.long_read){
      std::cout << "Size of tc.flens_lr and _c is: " << tc.flens_lr.size() << " " << tc.flens_lr_c.size() << std::endl;
      std::cout << "Size of target_names_ is: " << target_names_.size() << std::endl;
      eff_lens_.reserve(tc.flens_lr.size()); 
      for (int i = 0; i < tc.flens_lr.size(); i++){
-       if  (tc.flens_lr[i][0] == 31){
+       if  (tc.flens_lr[i][zero] == 31){
         eff_lens_.push_back(index_.target_lens_[i]-31);
        }
        else if (tc.flens_lr_c[i] != 0 && tc.flens_lr[i] != 0){
