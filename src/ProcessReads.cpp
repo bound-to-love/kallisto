@@ -1390,10 +1390,10 @@ void ReadProcessor::processBuffer() {
 
       // collect fragment length info
       if (!lr.empty() && long_read && 0 <= ec &&  ec < index.num_trans && !vlr.empty()) {
-        int num_samples=30;
+        int num_samples=20;
         int pass=vlr.size()/num_samples;
         std::vector<std::pair<KmerEntry,int>> vlr_pass;
-        int passall=1;
+        int passall=0;
         KmerEntry val; 
         Kmer km; 
         for (int i = 1; i < num_samples; i++)
@@ -1403,12 +1403,12 @@ void ReadProcessor::processBuffer() {
           p = findFirstMappingKmer(vlr_pass, val);
           km = Kmer((slr+p));
           auto x = index.findPosition(lr[0], km, val, p);
-          if (x.first == -1){
-            passall=-1;
+          if (x.first != -1){
+            passall+=1;
           }
         }
         int tl=-1;
-        if(passall==1) {
+        if(passall>=num_samples/2.0) {
           tl = l1;
         }
         // try to map the reads
