@@ -51,7 +51,7 @@ struct EMAlgorithm {
        if (tc.flens_lr_c[i] != 0 && tc.flens_lr[i] != 0){
          eff_lens_.push_back(double(tc.flens_lr[i])/double(tc.flens_lr_c[i]));
        } else {
-         eff_lens_.push_back(index_.target_lens_[i]);
+         eff_lens_.push_back(100.0); //eff_lens_.push_back(index_.target_lens_[i]);
        }
      }
      std::cout << "Size of eff_lens_ is: " << eff_lens_.size() << std::endl;
