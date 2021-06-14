@@ -49,7 +49,7 @@ struct EMAlgorithm {
      eff_lens_.reserve(tc.flens_lr.size()); 
      for (int i = 0; i < tc.flens_lr.size(); i++){
        if  (tc.flens_lr[i] % 31 == 0){
-        eff_lens_.push_back(index_.target_lens_[i]-31);
+        eff_lens_.push_back(index_.target_lens_[i]);
        }
        else if (tc.flens_lr_c[i] != 0 && tc.flens_lr[i] != 0){
          eff_lens_.push_back(double(tc.flens_lr[i])/double(tc.flens_lr_c[i]));
