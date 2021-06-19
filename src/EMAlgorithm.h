@@ -49,12 +49,12 @@ struct EMAlgorithm {
      eff_lens_.reserve(tc.flens_lr.size()); 
      for (int i = 0; i < tc.flens_lr.size(); i++){
        if  (tc.flens_lr[i] % 31 == 0){
-        eff_lens_.push_back(std::max(31, index_.target_lens_[i]-31));
+        eff_lens_.push_back(std::max(31.0, index_.target_lens_[i]-31.0));
        }
        else if (tc.flens_lr_c[i] != 0 && tc.flens_lr[i] != 0){
-         eff_lens_.push_back(std::max(31, double(tc.flens_lr[i])/double(tc.flens_lr_c[i])-31));
+         eff_lens_.push_back(std::max(31.0, double(tc.flens_lr[i])/double(tc.flens_lr_c[i])-31.0)));
        } else {
-         eff_lens_.push_back(std::max(31, index_.target_lens_[i]-31)); //eff_lens_.push_back(index_.target_lens_[i]);
+         eff_lens_.push_back(std::max(31.0, index_.target_lens_[i]-31.0)); //eff_lens_.push_back(index_.target_lens_[i]);
        }
      }
      std::cout << "Size of eff_lens_ is: " << eff_lens_.size() << std::endl;
