@@ -52,7 +52,7 @@ struct EMAlgorithm {
         eff_lens_.push_back(std::max(31.0, index_.target_lens_[i]-31.0));
        }
        else if (tc.flens_lr_c[i] != 0 && tc.flens_lr[i] != 0){
-         eff_lens_.push_back(std::max(31.0, double(tc.flens_lr[i])/double(tc.flens_lr_c[i])-31.0)));
+         eff_lens_.push_back(std::max(31.0, double(tc.flens_lr[i])/double(tc.flens_lr_c[i])-31.0));
        } else {
          eff_lens_.push_back(std::max(31.0, index_.target_lens_[i]-31.0)); //eff_lens_.push_back(index_.target_lens_[i]);
        }
