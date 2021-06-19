@@ -90,6 +90,10 @@ struct EMAlgorithm {
         eff_lens_ = update_eff_lens(all_fl_means, tc_, index_, alpha_, eff_lens_, post_bias_, opt);
         weight_map_ = calc_weights (tc_.counts, ecmap_, eff_lens_);
       }
+      
+      if (recomputeEffLen && (i == min_rounds || i == min_rounds + 500) && opt.long_read) {
+        weight_map_ = calc_weights (tc_.counts, ecmap_, eff_lens_);
+      }
 
 
       //for (auto& ec_kv : ecmap_ ) {
