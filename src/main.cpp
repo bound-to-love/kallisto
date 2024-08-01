@@ -937,7 +937,7 @@ bool CheckOptionsBus(ProgramOptions& opt) {
     ret = false;
   }
 
-  if (opt.long_read && !(0 < opt.threshold < 1)) { 
+  if (opt.long_read && !(0 < opt.threshold && opt.threshold < 1)) { 
      std::cerr << "Threshold not in (0,1). Setting default threshold for unmapped kmers to 0.8" << std::endl;
      opt.threshold = 0.8;
   }
